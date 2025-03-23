@@ -1,0 +1,15 @@
+# Виртуальное окружение
+.venv/
+venv/
+
+# PyCharm
+.idea/
+
+# Секреты
+.env
+tgmag.json
+package.json
+
+# Временные файлы
+*.pyc
+__pycache__/
