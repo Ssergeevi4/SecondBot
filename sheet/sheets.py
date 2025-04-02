@@ -1,6 +1,4 @@
 from datetime import datetime
-from idlelib.configdialog import changes
-
 import gspread
 from google.oauth2.service_account import Credentials
 from config.config import SHEET_NAME, CREDENTIALS_PATH
