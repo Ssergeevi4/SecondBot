@@ -1,0 +1,81 @@
+name: Deploy Telegram Bot
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Устанавливаем sshpass
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      # 2. Чекаут кода
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 3. Создаём скрипт деплоя
+      - name: Create deploy script
+        run: |
+          cat > deploy.sh << 'SCRIPT'
+          #!/bin/bash
+          set -e  # Останавливаем выполнение при любой ошибке
+
+          # Устанавливаем зависимости
+          apt update
+          apt install -y python3 python3-pip
+
+          # Создаём директорию проекта
+          mkdir -p /root/stazh/sergey/SecondBot/
+          cd /root/stazh/sergey/SecondBot/
+
+          # Копируем файлы из временной директории
+          cp -r /tmp/stazh/sergey/SecondBot/* .
+
+          # Устанавливаем зависимости Python
+          pip3 install --upgrade pip
+          if [ -f "requirements.txt" ]; then
+            pip3 install -r requirements.txt
+          else
+            echo "requirements.txt not found!"
+            exit 1
+          fi
+
+          # Останавливаем текущий процесс бота
+          pkill -f "python3 main.py" || true
+
+          # Запускаем бота
+          nohup python3 main.py >> /root/stazh/sergey/SecondBot/bot.log 2>&1 &
+          echo "Bot started successfully!"
+          SCRIPT
+          chmod +x deploy.sh
+
+      # 4. Деплой и запуск бота
+      - name: Deploy and run bot
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}  # Добавляем секрет для Google Credentials
+        run: |
+          # Копируем весь проект во временную директорию на сервере
+          sshpass -p "$PASSWORD" scp -r -o StrictHostKeyChecking=no . $USERNAME@$HOST:/tmp/stazh/sergey/SecondBot/
+          # Копируем скрипт деплоя
+          sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no deploy.sh $USERNAME@$HOST:/tmp/
+          # Выполняем деплой
+          sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << 'EOF'
+            # Создаём .env файл с TELEGRAM_TOKEN
+            echo "TELEGRAM_TOKEN=$TELEGRAM_TOKEN" > /root/stazh/sergey/SecondBot/.env
+            # Создаём файл с Google Credentials
+            echo "$GOOGLE_CREDENTIALS" > /root/stazh/sergey/SecondBot/TelegramBot.json
+            # Проверяем содержимое директории
+            ls -la /root/stazh/sergey/SecondBot/
+            # Запускаем скрипт деплоя
+            bash /tmp/deploy.sh && rm /tmp/deploy.sh
+            # Удаляем временную директорию
+            rm -rf /tmp/stazh
+          EOF
