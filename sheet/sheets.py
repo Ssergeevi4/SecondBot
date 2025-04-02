@@ -9,14 +9,15 @@ CREDENTIALS_PATH = "/root/stazh/sergey/SecondBot/TelegramBot.json"
 creds = Credentials.from_service_account_file(CREDENTIALS_PATH, scopes=scope)
 client = gspread.authorize(creds)
 
+REMOVE_T = "TGmag"
+
 # Открытие таблицы
-spreadsheet = client.open(SHEET_NAME)
+spreadsheet = client.open(REMOVE_T)
 products_sheet = spreadsheet.worksheet("Products")
 cart_sheet = spreadsheet.worksheet("Cart")
 orders_sheet = spreadsheet.worksheet("Orders")
 
 
-REMOVE_T = "TGmag"
 
 def remove_from_cart(user_id, product_id=None):
     """Удаляет товары из корзины пользователя. Если product_id=None, удаляет все товары пользователя."""

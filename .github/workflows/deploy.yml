@@ -60,6 +60,7 @@ jobs:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
           LIMIT: ${{ secrets.LIMIT }}
         run: |
+          echo "TELEGRAM_TOKEN length: ${#TELEGRAM_TOKEN}"
           # Создаём директорию на сервере
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "mkdir -p /root/stazh/sergey/SecondBot/"
           # Копируем весь проект напрямую в целевую директорию
