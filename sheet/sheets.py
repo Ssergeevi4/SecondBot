@@ -5,6 +5,7 @@ from config.config import SHEET_NAME, CREDENTIALS_PATH
 
 # Настройка авторизации
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+CREDENTIALS_PATH = "/root/stazh/sergey/SecondBot/TelegramBot.json"
 creds = Credentials.from_service_account_file(CREDENTIALS_PATH, scopes=scope)
 client = gspread.authorize(creds)
 
