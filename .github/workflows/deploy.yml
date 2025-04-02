@@ -58,6 +58,7 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          LIMIT: ${{ secrets.LIMIT }}
         run: |
           # Создаём директорию на сервере
           sshpass -p "$PASSWORD" ssh -o StrictHostKeyChecking=no $USERNAME@$HOST "mkdir -p /root/stazh/sergey/SecondBot/"
@@ -71,6 +72,7 @@ jobs:
             cd /root/stazh/sergey/SecondBot/
             # Создаём .env файл с TELEGRAM_TOKEN
             echo "TELEGRAM_TOKEN=$TELEGRAM_TOKEN" > .env
+            echo "LIMIT=$LIMIT" >> .env
             # Создаём файл с Google Credentials
             echo "$GOOGLE_CREDENTIALS" > TelegramBot.json
             # Проверяем содержимое директории
