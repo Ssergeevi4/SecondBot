@@ -33,7 +33,7 @@ jobs:
           cd /root/stazh/sergey/SecondBot/
 
           # Копируем файлы из временной директории
-          cp -r /tmp/stazh/sergey/SecondBot/* .
+          cp -r /tmp/stazh/sergey/* .
 
           # Устанавливаем зависимости Python
           pip3 install --upgrade pip
@@ -63,7 +63,7 @@ jobs:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}  # Добавляем секрет для Google Credentials
         run: |
           # Копируем весь проект во временную директорию на сервере
-          sshpass -p "$PASSWORD" scp -r -o StrictHostKeyChecking=no . $USERNAME@$HOST:/tmp/stazh/sergey/SecondBot/
+          sshpass -p "$PASSWORD" scp -r -o StrictHostKeyChecking=no . $USERNAME@$HOST:/tmp/stazh/sergey/
           # Копируем скрипт деплоя
           sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no deploy.sh $USERNAME@$HOST:/tmp/
           # Выполняем деплой
