@@ -8,7 +8,7 @@ router = Router()
 @router.message(lambda message: message.text and "|" in message.text)
 async def add_product(message: types.Message):
     role = get_user_role(message.from_user.id)
-    if role == "admin":
+    if role in ["seller", "admin"]:
         await message.reply("Эта команда доступна только администраторам.")
         return
     try:

@@ -4,10 +4,12 @@ from config.config import TOKEN
 from handlers.catalog import router as catalog_router
 from handlers import invite, add_product
 from handlers.admin import router as admin_router
+from handlers.invite import start_with_code
 from handlers.seller import router as seller_router
 from handlers.cart import router as cart_router
 from aiogram.types import Message
 from aiogram.filters import Command
+from  handlers.invite import router as invite_router
 import asyncio
 
 
